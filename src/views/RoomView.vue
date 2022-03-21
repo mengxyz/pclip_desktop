@@ -1,76 +1,117 @@
 <template>
-  <p>{{ id }}</p>
-  <div class="flex flex-col gap-3" :class="$tt('body2')">
-    <div v-ripple class="self-end message owner">Message</div>
-    <p class="self-start message">Message2</p>
-    <div v-ripple class="self-start message">
-      Contrary to popular belief, Lorem Ipsum is not simply random text. It has
-      roots in a piece of classical Latin literature from 45 BC, making it over
-      2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney
-      College in Virginia, looked up one of the more obscure Latin words,
-      consectetur, from a Lorem Ipsum passage, and going through the cites of
-      the word in classical literature, discovered the undoubtable source. Lorem
-      Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et
-      Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This
-      book is a treatise on the theory of ethics, very popular during the
-      Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit
-      amet..", comes from a line in section 1.10.32. The standard chunk of Lorem
-      Ipsum used since the 1500s is reproduced below for those interested.
-      Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by
-      Cicero are also reproduced in their exact original form, accompanied by
-      English versions from the 1914 translation by H. Rackham.
+  <RoomSettingDialog v-model:dialog="openSetting" :id="room?.id" />
+  <div
+    class="flex flex-col gap-3 h-full"
+    :class="$tt('body2')"
+    ref="conversations"
+  >
+    <div
+      class="flex flex-col gap-3 h-full overflow-y-scroll"
+      :class="$tt('body2')"
+      ref="conversations"
+    >
+      <template v-for="message in messages" :key="message.id">
+        <MessageBuble
+          :message="message"
+          @onDelete="deleteMessage(message.id)"
+        />
+      </template>
     </div>
-    <p class="self-start message owner">
-      "But I must explain to you how all this mistaken idea of denouncing
-      pleasure and praising pain was born and I will give you a complete account
-      of the system, and expound the actual teachings of the great explorer of
-      the truth, the master-builder of human happiness. No one rejects,
-      dislikes, or avoids pleasure itself, because it is pleasure, but because
-      those who do not know how to pursue pleasure rationally encounter
-      consequences that are extremely painful. Nor again is there anyone who
-      loves or pursues or desires to obtain pain of itself, because it is pain,
-      but because occasionally circumstances occur in which toil and pain can
-      procure him some great pleasure. To take a trivial example, which of us
-      ever undertakes laborious physical exercise, except to obtain some
-      advantage from it? But who has any right to find fault with a man who
-      chooses to enjoy a pleasure that has no annoying consequences, or one who
-      avoids a pain that produces no resultant pleasure?"
-    </p>
+    <div class="flex flex-row gap-2 w-full items-end">
+      <ui-icon-button
+        @click="openSetting = true"
+        :class="$theme.getThemeClass('primary')"
+        icon="settings"
+      ></ui-icon-button>
+      <ui-textfield
+        v-model="messageInput"
+        v-on:input="inputCallBack($event)"
+        inputId="conInput"
+        input-type="textarea"
+        class="!w-full !max-h-[100px]"
+      >
+        Aa
+      </ui-textfield>
+      <ui-icon-button
+        @click="sendMessage()"
+        icon="send"
+        :class="$theme.getThemeClass('primary')"
+      ></ui-icon-button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, prop } from "vue-class-component";
-class Props {
-  id = prop({
-    type: String,
-    required: true,
-  });
-}
-export default class RoomVue extends Vue.with(Props) {
+import { RealtimeSubscription } from "@supabase/supabase-js";
+import { Vue, Options, prop } from "vue-class-component";
+import RoomSettingDialog from "../components/RoomSettingDialog.vue";
+import { MessageModel } from "../types/message.model";
+import MessageBuble from "../components/MessageBuble.vue";
+import { MessageEncrypter } from "../utils/message-encrypter";
+import { RoomModel } from "../types/room.model";
+
+@Options({
+  components: { RoomSettingDialog, MessageBuble },
+})
+export default class RoomVue extends Vue {
+  room?: RoomModel;
+  openSetting = false;
+  subscribe?: RealtimeSubscription;
+  messages: Array<MessageModel> = [];
+  encrypter?: MessageEncrypter;
+  messageInput = "";
+  declare $refs: {
+    conversations: HTMLDivElement;
+  };
+  isLoading = false;
+  async toggleLoader() {
+    this.isLoading = !this.isLoading;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.isLoading = !this.isLoading;
+  }
+  onChange(change: Array<MessageModel>) {
+    this.messages = change;
+  }
+  inputCallBack(event: Event) {
+    const textArea = event.target as HTMLTextAreaElement | null;
+    if (textArea != null) {
+      textArea.style.height = "auto";
+      textArea.style.height = textArea.scrollHeight + "px";
+    }
+  }
+  sendMessage() {
+    this.$roomService.sendMessage(
+      this.room!.id,
+      this.messageInput,
+      this.encrypter!
+    );
+    this.messageInput = "";
+  }
+  deleteMessage(id: string) {
+    this.$roomService.deleteMessage(id);
+  }
   created() {
-    console.log("Create", this.id);
+    this.room = this.$route.params as unknown as RoomModel;
+    console.log("Create", this.room!.id);
+    const secret = localStorage.getItem(this.room!.id)!;
+    this.encrypter = new MessageEncrypter(secret, this.room!.iv);
   }
-  mounted() {
-    console.log("Mount", this.id);
-    document.title = "Room " + this.id;
+  async mounted() {
+    this.$refs.conversations.scrollTop = this.$refs.conversations.scrollHeight;
+    this.subscribe = await this.$roomService.messageObserver(
+      this.room!.id,
+      this.encrypter!,
+      this.onChange
+    );
   }
-  updated() {
-    console.log("Update", this.id);
-    document.title = "Room " + this.id;
+  unmounted() {
+    this.subscribe?.unsubscribe();
   }
+  updated() {}
 }
 </script>
 <style lang="scss" scoped>
-@use "@material/theme" as color;
-.message {
-  background-color: #eee;
-  padding: 0.5rem;
-  border-radius: 8px;
-  color: black;
-  &.owner {
-    background-color: color.$primary;
-    color: white;
-  }
+textarea {
+  resize: none;
 }
 </style>

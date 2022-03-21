@@ -50,5 +50,17 @@ export default class JoinRoomDialog extends Vue.with(Props) {
     }
     this.$emit("update:dialog", false);
   }
+  unmounted() {
+    console.log("D unmount");
+  }
+  beforeUnmount() {
+    console.log("D bf unmount");
+  }
+  mounted() {
+    console.log("D mounted");
+  }
+  beforeMount() {
+    console.log("D bf mounted");
+  }
 }
 </script>

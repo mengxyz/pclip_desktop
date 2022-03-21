@@ -33,10 +33,9 @@ const routes: Array<RouteRecordRaw> = [
         component: BlankRoomView,
       },
       {
-        path: "/room/:id",
+        path: "/room",
         name: "room",
         component: RoomView,
-        props: (route) => ({ id: route.params.id }),
       },
     ],
   },
