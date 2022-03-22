@@ -1,6 +1,10 @@
 <template>
   <div>
-    <router-link :to="room_route" custom v-slot="{ navigate, isActive }">
+    <router-link
+      :to="{ name: 'room', params: room }"
+      custom
+      v-slot="{ navigate, isActive }"
+    >
       <!-- <NavLink :active="isActive" :href="href" @click="navigate">
         {{ route.fullPath }}
       </NavLink> -->
@@ -14,7 +18,7 @@
         <ui-card-content>
           <div class="p-3">
             <h1 :class="$tt('headline6')">{{ room.name }}</h1>
-            <h1 :class="$tt('subtitle1')">{{ room.uid }}</h1>
+            <h1 :class="$tt('body2')">-- sample --</h1>
           </div>
         </ui-card-content>
       </ui-card>
@@ -24,7 +28,6 @@
 
 <script lang="ts">
 import { Vue, prop } from "vue-class-component";
-import * as uuid from "uuid";
 import { RoomModel } from "../types/room.model";
 
 class Props {
@@ -32,17 +35,17 @@ class Props {
 }
 
 export default class Room extends Vue.with(Props) {
-  room_id = uuid.v4();
-  room_route = `/room/${this.room_id}`;
+  room_route = `/room/${this.room.id}`;
   click() {
     // this.$router.push();
   }
 }
 </script>
 <style lang="scss" scoped>
+@use "@material/theme" as color;
 .room {
   &.active {
-    background-color: grey;
+    border-left: solid 3px color.$primary !important;
   }
 }
 </style>

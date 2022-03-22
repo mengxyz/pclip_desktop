@@ -1,5 +1,6 @@
 export interface RoomModel {
-  uid: string;
+  id: string;
   name: string;
   owner: string;
+  iv: string;
 }

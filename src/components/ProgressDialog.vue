@@ -1,7 +1,7 @@
 <template>
   <ui-dialog
     :modelValue="dialog"
-    :maskClosable="true"
+    :maskClosable="false"
     @update:modelValue="$emit('update:dialog', $event)"
   >
     <ui-dialog-content>

@@ -47,7 +47,10 @@
       }
     },
     "updater": {
-      "active": false
+      "active": true,
+      "endpoints": ["http://localhost:5000/api/v1/updater"],
+      "dialog": false,
+      "pubkey": "YOUR_UPDATER_SIGNATURE_PUBKEY_HERE"
     },
     "allowlist": {
       "all": true
@@ -57,7 +60,7 @@
         "title": "Pclip",
         "width": 800,
         "height": 600,
-        "resizable": true,
+        "resizable": false,
         "fullscreen": false
       }
     ],

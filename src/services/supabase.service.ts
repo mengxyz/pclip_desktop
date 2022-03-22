@@ -8,6 +8,8 @@ import {
 import { STORAGE_KEY } from "@supabase/gotrue-js/src/lib/constants";
 import { useAuthStore } from "../store/authStore";
 import { RoomModel } from "../types/room.model";
+import { MessageModel } from "../types/message.model";
+import { observeWrapper } from "../utils/realtime-wrapper";
 
 export class SupabaseServices {
   private client: SupabaseClient;
@@ -72,37 +74,24 @@ export class SupabaseServices {
     return result.data?.map((e) => e as RoomModel) ?? [];
   }
 
+  async getRoom(id: String): Promise<RoomModel> {
+    const reslut = await this.client
+      .from("room")
+      .select()
+      .eq("id", id)
+      .single();
+    return reslut.data as RoomModel;
+  }
+
   async observeRooms(
     callback: (change: Array<RoomModel>) => void
   ): Promise<RealtimeSubscription> {
-    const { data } = await this.client.from("room").select();
-    let currentData: Array<RoomModel> = data?.map((e) => e as RoomModel) ?? [];
-    callback(currentData);
-    return this.client
-      .from("room")
-      .on("*", (snapshot) => {
-        switch (snapshot.eventType) {
-          case "INSERT": {
-            currentData.push(snapshot.new as RoomModel);
-            break;
-          }
-          case "DELETE": {
-            currentData = currentData.filter((e) => e.uid != snapshot.old.uid);
-            break;
-          }
-          case "UPDATE": {
-            const index = currentData.findIndex(
-              (e) => e.uid == (snapshot.old as RoomModel).uid
-            );
-            currentData[index] = snapshot.new as RoomModel;
-            break;
-          }
-          default:
-            break;
-        }
-        callback([...currentData]);
-      })
-      .subscribe();
+    return observeWrapper<RoomModel>(
+      this.client.from("room").select(),
+      this.client.from("room"),
+      callback,
+      (n, old) => n.id === old.id
+    );
   }
 
   user(): User | null {
@@ -113,5 +102,9 @@ export class SupabaseServices {
     return (
       this.user()?.email?.endsWith(import.meta.env.VITE_ANON_DOMAIN) == true
     );
+  }
+
+  accessToken(): string | undefined {
+    return this.client.auth.session()?.access_token;
   }
 }

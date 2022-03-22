@@ -24,7 +24,10 @@
       >
       <ui-button
         @click="createDeviceSession()"
-        class="!bg-green-400 !text-black"
+        :class="[
+          $theme.getThemeClass('secondary-bg'),
+          $theme.getThemeClass('on-secondary'),
+        ]"
         :disabled="loader"
         raised
         >Usedevice Sesssion</ui-button

@@ -1,6 +1,10 @@
 <template>
   <UserInfoDialog v-model:dialog="openUserDialog" />
-  <JoinRoomDialog v-model:dialog="isLoading" @onConfirm="joinRoom($event)" />
+  <JoinRoomDialog
+    v-model:dialog="openJoinRoomDialog"
+    @onConfirm="joinRoom($event)"
+  />
+  <progress-dialog v-model:dialog="isLoading" />
   <div class="hall-container">
     <ui-top-app-bar
       content-selector=".hall-content"
@@ -19,22 +23,31 @@
     <div class="hall-content">
       <ui-drawer viewport-height>
         <ui-drawer-header>
-          <ui-drawer-title>Room</ui-drawer-title>
+          <!-- <ui-drawer-title>Room</ui-drawer-title> -->
+          <div class="flex flex-row justify-between items-center h-full">
+            <p :class="$tt('headline6')">Room</p>
+            <ui-icon-button
+              :class="$theme.getThemeClass('primary')"
+              @click="openJoinRoomDialog = true"
+              icon="add_circle"
+            ></ui-icon-button>
+          </div>
         </ui-drawer-header>
+        <ui-divider></ui-divider>
         <ui-drawer-content>
           <div
             v-if="rooms.length === 0"
             class="h-full flex justify-center items-center flex-col gap-2"
           >
             <p>No room avilable</p>
-            <ui-button @click="isLoading = !isLoading" icon="add_circle"
+            <ui-button @click="openJoinRoomDialog = true" icon="add_circle"
               >Join room</ui-button
             >
           </div>
           <div v-if="rooms.length != 0">
             <div
               v-for="room in rooms"
-              :key="room.uid"
+              :key="room.id"
               class="flex flex-col gap-2 p-3"
             >
               <Room :room="room" />
@@ -63,6 +76,7 @@ import JoinRoomDialog from "../components/JoinRoomDialog.vue";
 })
 export default class MainView extends Vue {
   openUserDialog = false;
+  openJoinRoomDialog = false;
   isLoading = false;
   rooms: Array<RoomModel> = [];
   subscribe: RealtimeSubscription | null = null;
@@ -79,8 +93,16 @@ export default class MainView extends Vue {
   singOut() {
     this.$sbs.singOut();
   }
-  joinRoom(secret: { code: string; secret: string }) {
-    console.log(secret);
+  async joinRoom(secret: { code: string; secret: string }) {
+    try {
+      await this.$apiService.joinRoom(
+        secret.code,
+        secret.secret,
+        this.$sbs.accessToken()!
+      );
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
 </script>
