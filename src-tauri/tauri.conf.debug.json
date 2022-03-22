@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "Pclip",
+    "productName": "Pclip dedug",
     "version": "0.1.0"
   },
   "build": {
@@ -13,7 +13,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.github.pidsamhai.pclip",
+      "identifier": "com.github.pidsamhai.debug",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -50,14 +50,14 @@
       "active": true,
       "endpoints": ["http://localhost:5000/api/v1/updater"],
       "dialog": false,
-      "pubkey": "YOUR_UPDATER_SIGNATURE_PUBKEY_HERE"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDM3NTk2NzU3MTNGNjk0OTQKUldTVWxQWVRWMmRaTng2b0lYcElSRnpDS3Zaekl4Y2ZSelhQUnpQUVIzV3pXMTBjc1dDcFF2V0QK"
     },
     "allowlist": {
       "all": true
     },
     "windows": [
       {
-        "title": "Pclip",
+        "title": "Pclip debug",
         "width": 800,
         "height": 600,
         "resizable": false,
