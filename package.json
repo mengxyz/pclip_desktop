@@ -7,9 +7,9 @@
     "build": "vite build",
     "dev": "vite",
     "preview": "vite preview",
-    "tauri": "npx tauri",
-    "tauri:build:dev": "npx tauri build -c src-tauri/tauri.conf.debug.json -d",
-    "tauri:build:prod": "npx tauri build"
+    "tauri": "tauri",
+    "tauri:build:dev": "tauri build -c src-tauri/tauri.conf.debug.json -d",
+    "tauri:build:prod": "tauri build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.30.6",
