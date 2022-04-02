@@ -28,13 +28,11 @@
       "shortDescription": "",
       "longDescription": "",
       "deb": {
-        "depends": [],
-        "useBootstrapper": false
+        "depends": []
       },
       "macOS": {
         "frameworks": [],
         "minimumSystemVersion": "",
-        "useBootstrapper": false,
         "exceptionDomain": "",
         "signingIdentity": null,
         "providerShortName": null,
@@ -48,9 +46,9 @@
     },
     "updater": {
       "active": true,
-      "endpoints": ["http://localhost:5000/api/v1/updater"],
+      "endpoints": ["https://pclip-backend.vercel.app/api/v1/updater/{{target}}/{{current_version}}"],
       "dialog": false,
-      "pubkey": "YOUR_UPDATER_SIGNATURE_PUBKEY_HERE"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhFMUNBODE4ODI0NjA4QzIKUldUQ0NFYUNHS2djam01dGhjWEpNa25NV1U1WTVKTEpFQkl0TEFEWk1ySUUrN3Q5SUhkcmx1OEcK"
     },
     "allowlist": {
       "all": true
