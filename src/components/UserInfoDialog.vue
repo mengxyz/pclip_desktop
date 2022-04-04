@@ -1,32 +1,20 @@
 <template>
-  <ui-dialog
-    :modelValue="dialog"
-    :maskClosable="true"
-    @update:modelValue="$emit('update:dialog', $event)"
-  >
-    <ui-dialog-title>User Info</ui-dialog-title>
-    <ui-dialog-content>
-      <p>Awsome User Content</p>
-      <p v-if="!$sbs.isAnon()">
-        <strong>Email: </strong> {{ $sbs.user()?.email }}
-      </p>
-      <strong v-else> Use Device sessions </strong>
-    </ui-dialog-content>
-    <ui-dialog-actions>
-      <template #default="{ buttonClass }">
-        <ui-button :class="buttonClass" @click="closeDialog()">Close</ui-button>
-        <ui-button
-          :class="[
-            buttonClass,
-            $theme.getThemeClass('error'),
-            $theme.getThemeColor('error'),
-          ]"
-          @click="signOut"
-          >Signout</ui-button
-        >
-      </template>
-    </ui-dialog-actions>
-  </ui-dialog>
+  <v-dialog :model-value="true">
+    <v-card>
+      <v-card-title>User Info</v-card-title>
+      <v-card-text>
+        <p>Awsome User Content</p>
+        <p v-if="!$sbs.isAnon()">
+          <strong>Email: </strong> {{ $sbs.user()?.email }}
+        </p>
+        <strong v-else> Use Device sessions </strong>
+      </v-card-text>
+      <v-card-actions class="tw-justify-end">
+        <v-btn color="error" @click="signOut()"> Signout </v-btn>
+        <v-btn color="primary" @click="$router.push('/')"> Close </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -45,10 +33,5 @@ export default class UserInfoDialog extends Vue.with(Props) {
       this.$router.push("/signin");
     }
   }
-  //   created() {
-  //     this.$watch("dialog", () => {
-  //       console.debug("Change ", this.dialog);
-  //     });
-  //   }
 }
 </script>

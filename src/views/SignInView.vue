@@ -1,52 +1,69 @@
 <template>
-  <div class="flex justify-center items-center h-screen w-screen">
-    <div class="w-10/12 flex flex-col">
-      <ui-textfield v-model="email" class="mb-3" input-type="email" required>
-        Email
-      </ui-textfield>
+  <v-form ref="form">
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-screen tw-w-screen"
+    >
+      <div class="tw-w-10/12 tw-flex tw-flex-col">
+        <v-text-field
+          color="primary"
+          label="Email"
+          placeholder="Email"
+          v-model="email"
+          input-type="email"
+          :rules="[rules.email]"
+        ></v-text-field>
 
-      <ui-textfield
-        v-model="password"
-        input-type="password"
-        required
-        pattern=".{8,}"
-        helper-text-id="pw-validation-msg"
-        :attrs="{ autocomplete: 'current-password' }"
-      >
-        Password
-      </ui-textfield>
-      <ui-textfield-helper class="mb-3" id="pw-validation-msg" visible validMsg>
-        Must be at least 8 characters long
-      </ui-textfield-helper>
+        <v-text-field
+          v-model="password"
+          type="password"
+          name="input-10-1"
+          label="Password"
+          placeholder="Password"
+          :rules="[rules.minimum]"
+          hint="At least 8 characters"
+          counter
+        ></v-text-field>
 
-      <ui-button @click="signIn()" class="mb-3" :disabled="loader" raised
-        >Signin</ui-button
-      >
-      <ui-button
-        @click="createDeviceSession()"
-        :class="[
-          $theme.getThemeClass('secondary-bg'),
-          $theme.getThemeClass('on-secondary'),
-        ]"
-        :disabled="loader"
-        raised
-        >Usedevice Sesssion</ui-button
-      >
+        <div class="tw-flex tw-flex-col tw-gap-3">
+          <v-btn @click="signIn()" color="primary" :disabled="loader"
+            >Signin</v-btn
+          >
+          <v-btn
+            @click="createDeviceSession()"
+            class="!tw-bg-cyan-500 !tw-text-white"
+            :disabled="loader"
+            >Usedevice Sesssion</v-btn
+          >
+        </div>
+      </div>
     </div>
-  </div>
+  </v-form>
+  <v-snackbar v-model="showError" color="error">
+    {{ error }}
+  </v-snackbar>
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { InputValidator } from "../lib/input-validator";
 import { useAuthStore } from "../store/authStore";
 
 export default class SignInView extends Vue {
   store = useAuthStore();
   error = "";
+  showError = false;
   loader = false;
   email = "";
   password = "";
   openSetPinDialog = false;
+  declare $refs: {
+    form: HTMLFormElement;
+  };
+  rules = {
+    required: InputValidator.required,
+    minimum: (v: string) => InputValidator.min(v, 8),
+    email: InputValidator.validEmail,
+  };
   githubSignIn() {
     this.$sbs.signInWithGithub();
   }
@@ -59,10 +76,20 @@ export default class SignInView extends Vue {
     this.loader = false;
   }
   async createDeviceSession() {
-    this.loader = true;
-    const session = this.store.deviceSession!;
-    this.store.deviceSession = await this.$sbs.setSession(session);
-    this.loader = false;
+    try {
+      this.loader = true;
+      const session = this.store.deviceSession!;
+      this.store.deviceSession = await this.$sbs.setSession(session);
+    } catch (err: any) {
+      this.error = err;
+      this.showError = true;
+    } finally {
+      this.loader = false;
+    }
+  }
+  mounted() {
+    this.$watch("email", () => this.$refs.form.validate());
+    this.$watch("password", () => this.$refs.form.validate());
   }
 }
 </script>

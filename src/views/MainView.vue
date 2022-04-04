@@ -1,10 +1,10 @@
 <template>
-  <UserInfoDialog v-model:dialog="openUserDialog" />
+  <!-- <UserInfoDialog v-model:dialog="openUserDialog" />
   <JoinRoomDialog
     v-model:dialog="openJoinRoomDialog"
     @onConfirm="joinRoom($event)"
   />
-  <progress-dialog v-model:dialog="isLoading" />
+   <progress-dialog v-model:dialog="isLoading" />
   <div class="hall-container">
     <ui-top-app-bar
       content-selector=".hall-content"
@@ -23,7 +23,6 @@
     <div class="hall-content">
       <ui-drawer viewport-height>
         <ui-drawer-header>
-          <!-- <ui-drawer-title>Room</ui-drawer-title> -->
           <div class="flex flex-row justify-between items-center h-full">
             <p :class="$tt('headline6')">Room</p>
             <ui-icon-button
@@ -51,11 +50,52 @@
           </div>
         </ui-drawer-content>
       </ui-drawer>
-      <!-- App content -->
       <div class="demo-app-content w-full h-full p-2">
         <router-view :key="$route.params.id" />
       </div>
     </div>
+  </div> -->
+  <div class="tw-h-screen">
+    <v-toolbar
+      color="primary"
+      src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
+    >
+      <v-toolbar-title>Pclip</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon @click="$router.push('/setting')">mdi-export</v-icon>
+      </v-btn>
+    </v-toolbar>
+    <v-layout class="tw-h-full">
+      <v-navigation-drawer
+        floating
+        permanent
+        class="tw-border-solid tw-border-2 tw-border-gray-300"
+      >
+        <div
+          v-if="rooms.length === 0"
+          class="tw-h-full tw-flex tw-justify-center tw-items-center tw-flex-col tw-gap-2"
+        >
+          <p>No room avilable</p>
+          <v-btn
+            class="ma-2"
+            variant="text"
+            color="primary"
+            @click="openJoinRoomDialog = true"
+          >
+            <v-icon start class="tw-pr-4"> mdi-plus-circle </v-icon>Join room
+          </v-btn>
+        </div>
+        <v-list v-else class="tw-m-0 tw-p-0" density="compact" nav>
+          <room v-for="room in rooms" :key="room.id" :room="room" />
+        </v-list>
+      </v-navigation-drawer>
+      <v-main>
+        <router-view :key="$route.params.id ?? Date.now()" />
+      </v-main>
+    </v-layout>
   </div>
 </template>
 
@@ -63,13 +103,13 @@
 import { RealtimeSubscription } from "@supabase/realtime-js";
 import { Vue, Options } from "vue-class-component";
 import Room from "../components/Room.vue";
-import UserInfoDialog from "../components/UserInfoDialog.vue";
+// import UserInfoDialog from "../components/UserInfoDialog.vue";
 import { RoomModel } from "../types/room.model";
-import JoinRoomDialog from "../components/JoinRoomDialog.vue";
+// import JoinRoomDialog from "../components/JoinRoomDialog.vue";
 import { Events } from "../types/events";
 
 @Options({
-  components: { Room, UserInfoDialog, JoinRoomDialog },
+  components: { Room /*UserInfoDialog, JoinRoomDialog*/ },
 })
 export default class MainView extends Vue {
   openUserDialog = false;

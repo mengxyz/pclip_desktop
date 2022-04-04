@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
+import vuetify from "@vuetify/vite-plugin";
 
 /**
  * Inject Vue Devtools to index.html
@@ -24,7 +25,13 @@ const inJectDevTools = () => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), inJectDevTools()],
+  plugins: [
+    vue(),
+    inJectDevTools(),
+    vuetify({
+      autoImport: true,
+    }),
+  ],
   envPrefix: "VITE_",
   resolve: {
     alias: {

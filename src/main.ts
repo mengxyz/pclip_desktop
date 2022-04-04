@@ -4,13 +4,14 @@ import router from "./router";
 import client from "./lib/supabase";
 import { createPinia } from "pinia";
 import { useAuthStore } from "./store/authStore";
-import BalmUI from "balm-ui/dist/balm-ui";
-import BalmUIPlus from "balm-ui/dist/balm-ui-plus";
 import "./styles/index.scss";
-import "balm-ui/dist/balm-ui.css";
 import ProgressDialog from "./components/ProgressDialog.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import servicesPlugins from "./plugins/services.plugins";
+import vuetify from "./plugins/vuetify";
+import { loadFonts } from "./plugins/webfontloader";
+
+loadFonts();
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -41,9 +42,10 @@ createApp({
   },
   render: () => h(App),
 })
-  .use(BalmUI)
-  .use(BalmUIPlus)
+  // .use(BalmUI)
+  // .use(BalmUIPlus)
   .use(router)
+  .use(vuetify)
   .use(servicesPlugins)
   .use(pinia)
   .component("ProgressDialog", ProgressDialog)

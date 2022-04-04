@@ -1,42 +1,53 @@
 <template>
-  <RoomSettingDialog v-model:dialog="openSetting" :id="room?.id" />
+  <!-- <RoomSettingDialog v-model:dialog="openSetting" :id="room?.id" /> -->
+  <router-view />
   <div
-    class="flex flex-col gap-3 h-full"
-    :class="$tt('body2')"
+    class="tw-flex tw-flex-col tw-gap-3 tw-h-full tw-p-2"
     ref="conversations"
   >
     <div
-      class="flex flex-col gap-3 h-full overflow-y-scroll"
-      :class="$tt('body2')"
+      class="tw-flex tw-flex-col tw-gap-3 tw-h-full tw-overflow-y-auto"
       ref="conversations"
     >
       <template v-for="message in messages" :key="message.id">
         <MessageBuble
+          v-for="i in 1"
+          :key="i"
           :message="message"
           @onDelete="deleteMessage(message.id)"
         />
       </template>
+      <!-- <p v-for="i in 100" :key="i">Hello</p> -->
     </div>
-    <div class="flex flex-row gap-2 w-full items-end">
-      <ui-icon-button
-        @click="openSetting = true"
-        :class="$theme.getThemeClass('primary')"
-        icon="settings"
-      ></ui-icon-button>
-      <ui-textfield
+    <div
+      class="tw-flex tw-flex-row tw-gap-2 tw-w-full tw-items-center !tw-mb-[60px]"
+    >
+      <v-btn
+        @click="$router.push('/setting')"
+        icon="mdi-cog"
+        size="small"
+        class="!tw-shadow-none text-primary"
+      ></v-btn>
+      <v-textarea
         v-model="messageInput"
-        v-on:input="inputCallBack($event)"
-        inputId="conInput"
-        input-type="textarea"
-        class="!w-full !max-h-[100px]"
-      >
-        Aa
-      </ui-textfield>
-      <ui-icon-button
+        persistent-placeholder
+        hide-details
+        label="Aa"
+        rows="1"
+        no-resize
+        max-rows="3"
+      ></v-textarea>
+      <v-btn
+        icon="mdi-alarm"
+        size="small"
+        class="!tw-shadow-none text-primary"
+      ></v-btn>
+      <v-btn
         @click="sendMessage()"
-        icon="send"
-        :class="$theme.getThemeClass('primary')"
-      ></ui-icon-button>
+        icon="mdi-send"
+        size="small"
+        class="!tw-shadow-none text-primary"
+      ></v-btn>
     </div>
   </div>
 </template>
@@ -97,6 +108,7 @@ export default class RoomVue extends Vue {
     console.log("Create", this.room!.id);
     const secret = localStorage.getItem(this.room!.id)!;
     this.encrypter = new MessageEncrypter(secret, this.room!.iv);
+    this.$watch("messages", () => console.log(this.messages));
   }
   async mounted() {
     this.$refs.conversations.scrollTop = this.$refs.conversations.scrollHeight;
@@ -112,8 +124,3 @@ export default class RoomVue extends Vue {
   updated() {}
 }
 </script>
-<style lang="scss" scoped>
-textarea {
-  resize: none;
-}
-</style>

@@ -1,11 +1,15 @@
 <template>
-  <UpdaterDialog
+  <!-- <UpdaterDialog
     v-model:manifest="manifest"
     v-model:dialog="openUpdater"
     @install="install()"
   />
-  <ui-snackbar v-model="showError" message="Install update error"></ui-snackbar>
-  <router-view></router-view>
+  <ui-snackbar v-model="showError" message="Install update error"></ui-snackbar> -->
+  <v-app>
+    <v-main class="tw-h-screen">
+      <router-view></router-view>
+    </v-main>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -53,5 +57,6 @@ body,
 html {
   padding: 0;
   margin: 0;
+  overflow: auto !important;
 }
 </style>

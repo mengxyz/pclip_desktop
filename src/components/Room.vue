@@ -5,17 +5,12 @@
       custom
       v-slot="{ navigate, isActive }"
     >
-      <!-- <NavLink :active="isActive" :href="href" @click="navigate">
-        {{ route.fullPath }}
-      </NavLink> -->
-      <ui-card class="room" :class="{ active: isActive }" @click="navigate">
-        <ui-card-content>
-          <div class="p-3">
-            <h1 :class="$tt('caption')">{{ room.name }}</h1>
-            <h1 :class="$tt('subtitle2')">-- sample --</h1>
-          </div>
-        </ui-card-content>
-      </ui-card>
+      <v-list-item two-line @click="navigate" :class="{ active: isActive }">
+        <v-list-item-header>
+          <v-list-item-title>{{ room.name }}</v-list-item-title>
+          <v-list-item-subtitle>????????</v-list-item-subtitle>
+        </v-list-item-header>
+      </v-list-item>
     </router-link>
   </div>
 </template>

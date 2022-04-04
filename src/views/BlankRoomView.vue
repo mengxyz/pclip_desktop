@@ -1,8 +1,8 @@
 <template>
   <div
-    class="h-full w-full flex justify-center items-center gap-3 text-gray-500"
+    class="tw-h-full tw-w-full tw-flex tw-justify-center tw-items-center tw-gap-3 tw-text-gray-500"
   >
-    <ui-icon>announcement</ui-icon>
+    <v-icon large> mdi-message-alert </v-icon>
     <span> No Room Select</span>
   </div>
 </template>

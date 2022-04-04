@@ -5,6 +5,7 @@ import SignUpView from "../views/SignUpView.vue";
 import Mainiew from "../views/MainView.vue";
 import RoomView from "../views/RoomView.vue";
 import BlankRoomView from "../views/BlankRoomView.vue";
+import RoomSettings from "../components/UserInfoDialog.vue";
 
 const requireAuth = {
   requireAuth: true,
@@ -27,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
     component: Mainiew,
     meta: requireAuth,
     children: [
+      {
+        path: "/setting",
+        name: "room.setting",
+        component: RoomSettings,
+      },
       {
         path: "/",
         name: "room.empty",

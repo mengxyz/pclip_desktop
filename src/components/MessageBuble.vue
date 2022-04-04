@@ -1,22 +1,25 @@
 <template>
-  <div class="message flex flex-row items-center" :class="{ owner: isOwner }">
-    <ui-icon-button
+  <div
+    class="message tw-flex tw-flex-row tw-items-center"
+    :class="{ owner: isOwner }"
+  >
+    <v-btn
       @click="onDelete()"
-      class="!opacity-0 hover:!opacity-100 message-actions !text-gray-400"
+      class="!tw-opacity-0 hover:!tw-opacity-100 message-actions !tw-text-gray-400 !tw-shadow-none tw-mr-2"
+      icon="mdi-delete"
       v-if="isOwner"
-      icon="delete"
-    ></ui-icon-button>
+    ></v-btn>
     <div>
       <p class="message-label">
         {{ message.message }}
       </p>
     </div>
-    <ui-icon-button
+    <v-btn
       @click="onDelete()"
-      class="!opacity-0 hover:!opacity-100 message-actions !text-gray-400"
+      class="!tw-opacity-0 hover:!tw-opacity-100 message-actions !tw-text-gray-400 !tw-shadow-none tw-mr-2"
+      icon="mdi-delete"
       v-if="!isOwner"
-      icon="delete"
-    ></ui-icon-button>
+    ></v-btn>
   </div>
 </template>
 
