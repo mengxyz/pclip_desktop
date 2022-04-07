@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+import { RoomModel } from "../types/room.model";
+
+interface Props {
+  room: RoomModel;
+}
+
+defineProps<Props>();
+</script>
+
 <template>
   <div>
     <router-link
@@ -5,7 +15,12 @@
       custom
       v-slot="{ navigate, isActive }"
     >
-      <v-list-item two-line @click="navigate" :class="{ active: isActive }">
+      <v-list-item
+        two-line
+        @click="navigate"
+        :class="{ active: isActive }"
+        class="room"
+      >
         <v-list-item-header>
           <v-list-item-title>{{ room.name }}</v-list-item-title>
           <v-list-item-subtitle>????????</v-list-item-subtitle>
@@ -15,27 +30,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, prop } from "vue-class-component";
-import { RoomModel } from "../types/room.model";
-
-class Props {
-  room = prop<RoomModel>({ required: true });
-}
-
-export default class Room extends Vue.with(Props) {
-  room_route = `/room/${this.room.id}`;
-  click() {
-    // this.$router.push();
-  }
-}
-</script>
 <style lang="scss" scoped>
-@use "@material/theme" as color;
 .room {
   &.active {
-    // border-left: solid 3px color.$primary !important;
-    background-color: #f0f2f5;
+    &.v-theme--light {
+      @apply tw-bg-light-900;
+    }
+    &.v-theme--dark {
+      @apply tw-bg-dark-200;
+    }
   }
 }
 </style>

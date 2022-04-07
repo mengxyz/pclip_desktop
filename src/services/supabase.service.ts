@@ -75,6 +75,15 @@ export class SupabaseServices {
     return result.data?.map((e) => e as RoomModel) ?? [];
   }
 
+  async getRoom(id: string): Promise<RoomModel> {
+    const result = await this.client
+      .from("room")
+      .select()
+      .eq("id", id)
+      .single();
+    return result.data as RoomModel;
+  }
+
   async observeMembers(
     room_id: string,
     callback: ObserveCallBack<MemberModel>

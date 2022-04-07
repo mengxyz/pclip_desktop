@@ -5,7 +5,8 @@ import SignUpView from "../views/SignUpView.vue";
 import Mainiew from "../views/MainView.vue";
 import RoomView from "../views/RoomView.vue";
 import BlankRoomView from "../views/BlankRoomView.vue";
-import RoomSettings from "../components/UserInfoDialog.vue";
+import JoinRoomDialog from "../views/JoinRoomDialog.vue";
+import RoomSettings from "../components/RoomSetting.vue";
 
 const requireAuth = {
   requireAuth: true,
@@ -29,19 +30,27 @@ const routes: Array<RouteRecordRaw> = [
     meta: requireAuth,
     children: [
       {
-        path: "/setting",
-        name: "room.setting",
-        component: RoomSettings,
-      },
-      {
         path: "/",
         name: "room.empty",
         component: BlankRoomView,
       },
       {
-        path: "/room",
+        path: "/join",
+        name: "room.join",
+        component: JoinRoomDialog,
+      },
+      {
+        path: "/room/",
         name: "room",
         component: RoomView,
+        children: [
+          {
+            path: "/setting/:id",
+            name: "room.setting",
+            component: RoomSettings,
+            props: (route) => ({ id: route.params.id }),
+          },
+        ],
       },
     ],
   },

@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
 import vuetify from "@vuetify/vite-plugin";
+import WindiCSS from "vite-plugin-windicss";
 
 /**
  * Inject Vue Devtools to index.html
@@ -31,6 +32,7 @@ export default defineConfig({
     vuetify({
       autoImport: true,
     }),
+    WindiCSS(),
   ],
   envPrefix: "VITE_",
   resolve: {

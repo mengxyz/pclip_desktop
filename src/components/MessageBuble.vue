@@ -5,7 +5,7 @@
   >
     <v-btn
       @click="onDelete()"
-      class="!tw-opacity-0 hover:!tw-opacity-100 message-actions !tw-text-gray-400 !tw-shadow-none tw-mr-2"
+      class="tw-opacity-0 hover:tw-opacity-100 message-actions !tw-text-gray-400 !tw-shadow-none tw-mr-2"
       icon="mdi-delete"
       v-if="isOwner"
     ></v-btn>
@@ -16,7 +16,7 @@
     </div>
     <v-btn
       @click="onDelete()"
-      class="!tw-opacity-0 hover:!tw-opacity-100 message-actions !tw-text-gray-400 !tw-shadow-none tw-mr-2"
+      class="tw-opacity-0 hover:tw-opacity-100 message-actions !tw-text-gray-400 !tw-shadow-none tw-ml-2"
       icon="mdi-delete"
       v-if="!isOwner"
     ></v-btn>
@@ -40,34 +40,35 @@ export default class MessageBuble extends Vue.with(Props) {
 }
 </script>
 <style lang="scss" scoped>
-@use "@material/theme" as color;
 .message {
   .message-label {
-    background-color: #eee;
     padding: 0.5rem;
     border-radius: 8px;
   }
   &.owner {
     align-self: flex-end;
-    .message-label {
-      background-color: color.$primary;
-      color: white;
+  }
+}
+
+.v-theme--dark {
+  .message-label {
+    @apply tw-bg-dark-200;
+  }
+  .message {
+    &.owner {
+      .message-label {
+        @apply tw-bg-purple-400;
+      }
     }
+  }
+}
+.v-theme--light {
+  .message-label {
+    @apply tw-bg-light-900;
   }
 }
 
 .message-actions {
   transition: opacity 0.5s;
 }
-// .message {
-//   background-color: #eee;
-//   padding: 0.5rem;
-//   border-radius: 8px;
-//   color: black;
-//   &.owner {
-//     background-color: color.$primary;
-//     color: white;
-//     align-self: flex-end !important;
-//   }
-// }
 </style>

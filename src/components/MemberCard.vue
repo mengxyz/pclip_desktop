@@ -1,12 +1,12 @@
 <template>
-  <ui-card class="w-full" v-ripple v-shadow="2">
-    <ui-card-content>
-      <div class="p-3">
-        <h1 :class="$tt('body1')">{{ member.device_name }}</h1>
-        <h1 :class="$tt('body2')">{{ member.member_id }}</h1>
-      </div>
-    </ui-card-content>
-  </ui-card>
+  <v-list-item two-line class="tw-cursor-pointer member-item">
+    <v-list-item-header>
+      <v-list-item-title>{{ member.device_name }}</v-list-item-title>
+      <v-list-item-subtitle>{{
+        member.member_id.split("-")[0]
+      }}</v-list-item-subtitle>
+    </v-list-item-header>
+  </v-list-item>
 </template>
 
 <script lang="ts">
@@ -17,3 +17,10 @@ class Props {
 }
 export default class MemberCard extends Vue.with(Props) {}
 </script>
+<style lang="scss" scoped>
+.v-theme--dark {
+  &.member-item:hover {
+    @apply tw-bg-dark-50;
+  }
+}
+</style>

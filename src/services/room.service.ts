@@ -1,9 +1,10 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import { RealtimeSubscription, SupabaseClient } from "@supabase/supabase-js";
 import { MessageModel, MessageRequest } from "../types/message.model";
-import { observeWrapper } from "../utils/realtime-wrapper";
+import { ObserveCallBack, observeWrapper } from "../utils/realtime-wrapper";
 import { MessageEncrypter } from "../utils/message-encrypter";
 import client from "../lib/supabase";
 import { RoomModel } from "../types/room.model";
+import { MemberModel } from "../types/member.model";
 
 export class RoomService {
   private roomId: string;
@@ -64,5 +65,20 @@ export class RoomService {
     } catch (error) {
       return false;
     }
+  }
+
+  async observeMembers(
+    callback: ObserveCallBack<MemberModel>
+  ): Promise<RealtimeSubscription> {
+    return observeWrapper<MemberModel>(
+      client.from("room_member").select().eq("room_id", this.roomId),
+      client.from(`room_member?room_id.eq=${this.roomId}`),
+      callback,
+      (n, old) => n.id === old.id
+    );
+  }
+
+  saveSecret(secret: string) {
+    localStorage.setItem(this.roomId, secret);
   }
 }
